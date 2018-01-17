@@ -22,7 +22,7 @@ public class MonsterCreater : MonoBehaviour {
                 // 生成位置をランダムな座標にする
                 float x = Random.Range(-10f, 10f);
                 float z = Random.Range(-10f, 10f);
-                Vector3 pos = new Vector3(x, 0.6F, z);
+                Vector3 pos = new Vector3(x, 0F, z);
 
                 // 第1引数にResourcesフォルダの中にあるプレハブの名前(文字列)
                 // 第2引数にposition
