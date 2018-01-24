@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 11400002}
   - component: {fileID: 11400004}
   - component: {fileID: 11400006}
-  - component: {fileID: 11400000}
   - component: {fileID: 11400008}
   - component: {fileID: 8200000}
+  - component: {fileID: 114035215178307198}
+  - component: {fileID: 114584714846221512}
   m_Layer: 0
   m_Name: monsterprefab
   m_TagString: Player
@@ -2114,7 +2115,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100106}
-  m_LocalRotation: {x: -0.5397194, y: 0.7067544, z: 0.4567394, w: -0.02429584}
+  m_LocalRotation: {x: -0.53971946, y: 0.70675445, z: 0.45673943, w: -0.024295842}
   m_LocalPosition: {x: 0.52807194, y: 0.5730525, z: 0.14485188}
   m_LocalScale: {x: 1, y: 1, z: 0.99999994}
   m_Children: []
@@ -2427,17 +2428,6 @@ Animation:
 --- !u!1002 &11100001
 EditorExtensionImpl:
   serializedVersion: 6
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f3ceebf3f8195149bb4b56495a28f7a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1002 &11400001
 EditorExtensionImpl:
   serializedVersion: 6
@@ -2846,3 +2836,35 @@ Prefab:
 --- !u!1002 &100100001
 EditorExtensionImpl:
   serializedVersion: 6
+--- !u!114 &114035215178307198
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 363ce7d91c828493a9a19d4845d4292b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114584714846221512
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f04aa96c3db9b22499df04b7c798e649, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTransform: {fileID: 0}
+  distance: 7
+  height: 3
+  angularSmoothLag: 0.3
+  angularMaxSpeed: 15
+  heightSmoothLag: 0.3
+  snapSmoothLag: 0.2
+  snapMaxSpeed: 720
+  clampHeadPositionScreenSpace: 0.75
+  lockCameraTimeout: 0.2

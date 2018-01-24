@@ -579,15 +579,12 @@ GameObject:
   - component: {fileID: 4521466661595820}
   - component: {fileID: 111172503320344870}
   - component: {fileID: 143056424215968618}
-  - component: {fileID: 114729853691506482}
   - component: {fileID: 114964974196076412}
-  - component: {fileID: 114819638704946946}
-  - component: {fileID: 114780730684174100}
   - component: {fileID: 114976386224199978}
   - component: {fileID: 82737805354676352}
   - component: {fileID: 136817653316721184}
   - component: {fileID: 114389484491663132}
-  - component: {fileID: 114028194858924412}
+  - component: {fileID: 114561934171264694}
   m_Layer: 0
   m_Name: monster
   m_TagString: Player
@@ -2042,17 +2039,6 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 1
---- !u!114 &114028194858924412
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1524585842915940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 551d557d8cb684edba0d9df4d1a4b53c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114389484491663132
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2118,7 +2104,7 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
---- !u!114 &114729853691506482
+--- !u!114 &114561934171264694
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -2126,50 +2112,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1524585842915940}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d73edb06d4aa53540ac19898993544e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  idleAnimation: {fileID: 7400002, guid: 492cc7eb84514c64da25775df488c9e6, type: 3}
-  walkAnimation: {fileID: 7400004, guid: 492cc7eb84514c64da25775df488c9e6, type: 3}
-  runAnimation: {fileID: 7400006, guid: 492cc7eb84514c64da25775df488c9e6, type: 3}
-  jumpPoseAnimation: {fileID: 7400008, guid: 492cc7eb84514c64da25775df488c9e6, type: 3}
-  walkMaxAnimationSpeed: 0.75
-  trotMaxAnimationSpeed: 1
-  runMaxAnimationSpeed: 1
-  jumpAnimationSpeed: 4
-  landAnimationSpeed: 1
-  _characterState: 1
-  walkSpeed: 2
-  trotSpeed: 4
-  runSpeed: 5
-  inAirControlAcceleration: 3
-  jumpHeight: 0.5
-  gravity: 20
-  speedSmoothing: 10
-  rotateSpeed: 500
-  trotAfterSeconds: 3
-  canJump: 0
-  isControllable: 0
---- !u!114 &114780730684174100
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1524585842915940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f3ceebf3f8195149bb4b56495a28f7a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114819638704946946
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1524585842915940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c59ba0703a79d54c93a0e9991174504, type: 3}
+  m_Script: {fileID: 11500000, guid: c56473b2c91b74838b61ed1ede3262c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114964974196076412
@@ -2192,7 +2135,7 @@ MonoBehaviour:
   onSerializeRigidBodyOption: 2
   ownershipTransfer: 0
   ObservedComponents:
-  - {fileID: 114819638704946946}
+  - {fileID: 0}
   ObservedComponentsFoldoutOpen: 1
   viewIdField: 0
   instantiationId: -1
