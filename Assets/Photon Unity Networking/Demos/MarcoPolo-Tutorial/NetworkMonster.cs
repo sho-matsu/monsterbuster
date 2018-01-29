@@ -1,20 +1,22 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class NetworkMonster : Photon.MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     private Vector3 correctPlayerPos = Vector3.zero; // We lerp towards this
     private Quaternion correctPlayerRot = Quaternion.identity; // We lerp towards this
     private int hitCounter;
     private int limit = 5;
+    private GameObject target;
 
     void Awake()
     {
-        if (photonView.isMine)
-        {
-            GetComponent<ThirdPersonCamera>().enabled = true;
-            GetComponent<MonsterFire>().enabled = true;
-        }
+        //if (photonView.isMine)
+        //{
+        //    GetComponent<ThirdPersonCamera>().enabled = true;
+        //    GetComponent<MonsterFire>().enabled = true;
+        //}
+        target = GameObject.FindGameObjectWithTag("MainCamera");
     }
     // Update is called once per frame
     void Update()
@@ -22,7 +24,9 @@ public class NetworkMonster : Photon.MonoBehaviour, IPointerDownHandler, IPointe
         if (!photonView.isMine)
         {
             transform.position = Vector3.Lerp(transform.position, this.correctPlayerPos, Time.deltaTime * 5);
-            transform.rotation = Quaternion.Lerp(transform.rotation, this.correctPlayerRot, Time.deltaTime * 5);
+        } else {
+            var trans = transform.forward * 10 * Time.deltaTime;
+            transform.Translate(new Vector3(trans.x, 0f, trans.z));
         }
     }
 
@@ -56,7 +60,13 @@ public class NetworkMonster : Photon.MonoBehaviour, IPointerDownHandler, IPointe
                 hitCounter++;
                 if (hitCounter > limit)
                 {
-                    PhotonNetwork.Destroy(gameObject);
+                    if (photonView.isMine)
+                    {
+                        gameObject.SetActive(false);
+                        PhotonNetwork.Destroy(gameObject);
+                    } else {
+                        photonView.RequestOwnership();
+                    }
                 }
             }
         }
@@ -64,5 +74,26 @@ public class NetworkMonster : Photon.MonoBehaviour, IPointerDownHandler, IPointe
 
     public void OnPointerUp(PointerEventData eventData)
     {
+    }
+
+    public override void OnOwnershipRequest(object[] viewAndPlayer)
+    {
+        PhotonView view = viewAndPlayer[0] as PhotonView;
+        PhotonPlayer requestingPlayer = viewAndPlayer[1] as PhotonPlayer;
+
+        Debug.Log("OnOwnershipRequest(): Player " + requestingPlayer + " requests ownership of: " + view + ".");
+
+        view.TransferOwnership(requestingPlayer.ID);
+    }
+
+    public override void OnOwnershipTransfered(object[] viewAndPlayers)
+    {
+        PhotonView view = viewAndPlayers[0] as PhotonView;
+        PhotonPlayer requestingPlayer = viewAndPlayers[1] as PhotonPlayer;
+
+        if (view.isMine) {
+            view.gameObject.SetActive(false);
+            PhotonNetwork.Destroy(view.gameObject);
+        }
     }
 }

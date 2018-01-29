@@ -19,14 +19,25 @@ public class NetworkManager : Photon.PunBehaviour {
         PhotonNetwork.Disconnect();
     }
 
+    public override void OnConnectedToMaster()
+    {
+        Debug.Log("OnConnectedToMaster");
+        PhotonNetwork.JoinLobby();
+    }
+
     public override void OnJoinedLobby()
     {
-        Debug.Log("JoinRandom");
+        Debug.Log("OnJoinedLobby");
         PhotonNetwork.JoinRandomRoom();
+    }
+
+    public override void OnJoinedRoom() {
+        Debug.Log("OnJoinedRoom");
     }
 
     public void OnPhotonRandomJoinFailed()
     {
+        Debug.Log("OnPhotonRandomJoinFailed");
         PhotonNetwork.CreateRoom(null);
     }
 }
