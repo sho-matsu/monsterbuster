@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class MonsterCreater : MonoBehaviour {
     private float passedTime;
-    private const float interval = 8f;
+    public float interval;
 
 	// Use this for initialization
 	void Start () {
         passedTime = -10f;
+        if (Equals(interval, 0))
+        {
+            interval = 5;
+        }
 	}
 
     private void FixedUpdate()
@@ -27,15 +31,22 @@ public class MonsterCreater : MonoBehaviour {
                     // 生成位置をランダムな座標にする
                     float x = Random.Range(-10f, 10f);
                     float z = Random.Range(-10f, 10f);
-                    Vector3 pos = new Vector3(x, 0f, z);
+                    Vector3 pos = new Vector3(x, 1f, z);
 
                     // 第1引数にResourcesフォルダの中にあるプレハブの名前(文字列)
                     // 第2引数にposition
                     // 第3引数にrotation
                     // 第4引数にView ID(指定しない場合は0)
                     GameObject target = GameObject.FindGameObjectWithTag("MainCamera");
-                    Quaternion rotation = Quaternion.LookRotation(target.transform.position);
-                    GameObject obj = PhotonNetwork.Instantiate("monster", pos, rotation, 0);
+                    // モンスターのインスタンス生成
+                    GameObject obj = PhotonNetwork.Instantiate("monster", pos, Quaternion.identity, 0);
+                    // ターゲット（カメラ）に向かってくるよう調整
+                    obj.transform.LookAt(target.transform);
+                    obj.GetComponent<Rigidbody>().velocity = obj.transform.forward * 4;
+                    // 前進アニメーション
+                    var anim = obj.GetComponent<Animator>();
+                    // todo アニメーションのループ
+                    anim.Play("Run", 0, 0.0f);
                 }
             }
         }

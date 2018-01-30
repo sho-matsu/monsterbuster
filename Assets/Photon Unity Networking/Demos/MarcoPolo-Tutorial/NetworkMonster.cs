@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections;
 
 public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointerUpHandler
 {
@@ -24,9 +25,7 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
         if (!photonView.isMine)
         {
             transform.position = Vector3.Lerp(transform.position, this.correctPlayerPos, Time.deltaTime * 5);
-        } else {
-            var trans = transform.forward * 10 * Time.deltaTime;
-            transform.Translate(new Vector3(trans.x, 0f, trans.z));
+            transform.rotation = Quaternion.Lerp(transform.rotation, this.correctPlayerRot, Time.deltaTime * 5);
         }
     }
 
@@ -62,9 +61,10 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
                 {
                     if (photonView.isMine)
                     {
-                        gameObject.SetActive(false);
-                        PhotonNetwork.Destroy(gameObject);
+                        // 自身が生成したインスタンスの場合、GameObjectを破棄
+                        Dead(photonView.gameObject);
                     } else {
+                        // 自身のではない場合、権限を要求
                         photonView.RequestOwnership();
                     }
                 }
@@ -78,6 +78,7 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
 
     public override void OnOwnershipRequest(object[] viewAndPlayer)
     {
+        // 権限の要求があった場合、要求してきたプレイヤーに移譲する
         PhotonView view = viewAndPlayer[0] as PhotonView;
         PhotonPlayer requestingPlayer = viewAndPlayer[1] as PhotonPlayer;
 
@@ -88,12 +89,50 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
 
     public override void OnOwnershipTransfered(object[] viewAndPlayers)
     {
+        // 権限が移譲されたらGameObjectを破棄する
         PhotonView view = viewAndPlayers[0] as PhotonView;
         PhotonPlayer requestingPlayer = viewAndPlayers[1] as PhotonPlayer;
 
         if (view.isMine) {
-            view.gameObject.SetActive(false);
-            PhotonNetwork.Destroy(view.gameObject);
+            Dead(view.gameObject);
         }
+    }
+
+    [PunRPC]
+    public void Attack()
+    {
+        // 攻撃アニメーションを取得し、GameObjectに設定
+        // 攻撃し、パーティクルでエフェクトを表示したあと、GameObjectを破棄
+        Debug.Log("RPC Attack");
+        if (photonView.isMine)
+        {
+            StartCoroutine(RunAttack());
+        }
+    }
+
+    private IEnumerator RunAttack()
+    {
+        var monster = photonView.gameObject;
+        var rb = monster.GetComponent<Rigidbody>();
+        // モンスターにかかっている物理力をリセット
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.ResetInertiaTensor();
+
+        // 攻撃アニメーション
+        var anim = monster.GetComponent<Animator>();
+        anim.Play("Attack");
+
+        // todo
+        //yield return new WaitWhile(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1);
+        yield return new WaitForSeconds(2);
+
+        // モンスター破棄
+        Dead(photonView.gameObject);
+    }
+
+    private void Dead(GameObject monster) {
+        monster.SetActive(false);
+        PhotonNetwork.Destroy(monster);
     }
 }
