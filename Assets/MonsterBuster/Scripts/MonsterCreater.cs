@@ -5,6 +5,15 @@ using UnityEngine;
 public class MonsterCreater : MonoBehaviour {
     private float passedTime;
     public float interval;
+    // todo
+    private Dictionary<float, int> rangeList = new Dictionary<float, int>()
+    {
+        {11.5f, 1},
+        {9f, 1},
+        {6.5f, 1},
+        {4f, 1},
+        {1.5f, 1}
+    };
 
 	// Use this for initialization
 	void Start () {
@@ -43,9 +52,8 @@ public class MonsterCreater : MonoBehaviour {
                     // ターゲット（カメラ）に向かってくるよう調整
                     obj.transform.LookAt(target.transform);
                     obj.GetComponent<Rigidbody>().velocity = obj.transform.forward * 4;
-                    // 前進アニメーション
+                    // 移動アニメーション
                     var anim = obj.GetComponent<Animator>();
-                    // todo アニメーションのループ
                     anim.Play("Run", 0, 0.0f);
                 }
             }

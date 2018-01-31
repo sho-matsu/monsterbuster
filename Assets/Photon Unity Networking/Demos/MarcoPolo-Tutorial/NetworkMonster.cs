@@ -7,18 +7,18 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
     private Vector3 correctPlayerPos = Vector3.zero; // We lerp towards this
     private Quaternion correctPlayerRot = Quaternion.identity; // We lerp towards this
     private int hitCounter;
-    private int limit = 5;
+    public int limit;
     private GameObject target;
 
     void Awake()
     {
-        //if (photonView.isMine)
-        //{
-        //    GetComponent<ThirdPersonCamera>().enabled = true;
-        //    GetComponent<MonsterFire>().enabled = true;
-        //}
         target = GameObject.FindGameObjectWithTag("MainCamera");
+        if (limit == 0)
+        {
+            limit = 5;
+        }
     }
+
     // Update is called once per frame
     void Update()
     {
@@ -47,13 +47,14 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Ray ray = Camera.main.ScreenPointToRay(eventData.position);
-        RaycastHit hit;
+        //Ray ray = Camera.main.ScreenPointToRay(eventData.position);
+        //RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 100f))
-        {
-            //check if target object was hit
-            if (hit.transform.gameObject == gameObject)
+        //if (Physics.Raycast(ray, out hit, 100f))
+        //{
+        //check if target object was hit
+        //if (hit.transform.gameObject == gameObject)
+            if (eventData.pointerCurrentRaycast.gameObject == gameObject)
             {
                 Debug.Log("monster hit");
                 hitCounter++;
@@ -61,7 +62,7 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
                 {
                     if (photonView.isMine)
                     {
-                        // 自身が生成したインスタンスの場合、GameObjectを破棄
+                        // 自身が生成したインスタンスの場合、権限があるのでGameObjectを破棄
                         Dead(photonView.gameObject);
                     } else {
                         // 自身のではない場合、権限を要求
@@ -69,7 +70,7 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
                     }
                 }
             }
-        }
+        //}
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -103,11 +104,7 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
     {
         // 攻撃アニメーションを取得し、GameObjectに設定
         // 攻撃し、パーティクルでエフェクトを表示したあと、GameObjectを破棄
-        Debug.Log("RPC Attack");
-        if (photonView.isMine)
-        {
-            StartCoroutine(RunAttack());
-        }
+        StartCoroutine(RunAttack());
     }
 
     private IEnumerator RunAttack()
@@ -122,10 +119,11 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
         // 攻撃アニメーション
         var anim = monster.GetComponent<Animator>();
         anim.Play("Attack");
+        // ステートの反映に1フレームいる
+        yield return null;
 
-        // todo
-        //yield return new WaitWhile(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1);
-        yield return new WaitForSeconds(2);
+        // アニメーションが終わるまで待つ
+        yield return new WaitWhile(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1);
 
         // モンスター破棄
         Dead(photonView.gameObject);
