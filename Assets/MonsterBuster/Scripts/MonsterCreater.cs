@@ -3,6 +3,8 @@
 public class MonsterCreater : MonoBehaviour {
     private float passedTime;
     public float interval;
+    private int emergenceCount;
+    public static bool enableCreate;
 
 	// Use this for initialization
 	void Start () {
@@ -11,12 +13,20 @@ public class MonsterCreater : MonoBehaviour {
         {
             interval = 5;
         }
+        emergenceCount = 0;
+        enableCreate = true;
 	}
 
     private void FixedUpdate()
     {
+        if (!enableCreate) return;
+
         if (PhotonNetwork.isMasterClient)
         {
+            // 10体ごとに出現間隔を縮める
+            if (emergenceCount % 10 == 0) {
+                interval = interval / 4 * 3;
+            }
             var now = Time.fixedTime;
             var diff = Mathf.Abs(now - passedTime);
             if (diff > interval)
@@ -43,6 +53,7 @@ public class MonsterCreater : MonoBehaviour {
                     // 移動アニメーション
                     var anim = obj.GetComponent<Animator>();
                     anim.Play("Run", 0, 0.0f);
+                    emergenceCount++;
                 }
             }
         }

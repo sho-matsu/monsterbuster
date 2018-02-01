@@ -7,16 +7,18 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
     private Vector3 correctPlayerPos = Vector3.zero; // We lerp towards this
     private Quaternion correctPlayerRot = Quaternion.identity; // We lerp towards this
     private int hitCounter;
-    public int limit;
+    public int damageLimit;
     private GameObject target;
+    public static bool enableAttack;
 
     void Awake()
     {
         target = GameObject.FindGameObjectWithTag("MainCamera");
-        if (limit == 0)
+        if (damageLimit == 0)
         {
-            limit = 5;
+            damageLimit = 5;
         }
+        enableAttack = true;
     }
 
     // Update is called once per frame
@@ -51,8 +53,9 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
         {
             Debug.Log("monster hit");
             hitCounter++;
-            if (hitCounter > limit)
+            if (hitCounter > damageLimit)
             {
+                ScoreManager.ScoreUp();
                 if (photonView.isMine)
                 {
                     // 自身が生成したインスタンスの場合、権限があるのでGameObjectを破棄
@@ -94,6 +97,8 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
     [PunRPC]
     public void Attack()
     {
+        if (!enableAttack) return;
+
         // 攻撃アニメーションを取得し、GameObjectに設定
         // 攻撃し、パーティクルでエフェクトを表示したあと、GameObjectを破棄
         StartCoroutine(RunAttack());
