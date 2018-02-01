@@ -1,19 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MonsterCreater : MonoBehaviour {
     private float passedTime;
     public float interval;
-    // todo
-    private Dictionary<float, int> rangeList = new Dictionary<float, int>()
-    {
-        {11.5f, 1},
-        {9f, 1},
-        {6.5f, 1},
-        {4f, 1},
-        {1.5f, 1}
-    };
 
 	// Use this for initialization
 	void Start () {
@@ -28,18 +17,17 @@ public class MonsterCreater : MonoBehaviour {
     {
         if (PhotonNetwork.isMasterClient)
         {
-            //Debug.Log("PhotonNetwork.inRoom:" + PhotonNetwork.inRoom);
             var now = Time.fixedTime;
             var diff = Mathf.Abs(now - passedTime);
-            //Debug.Log("diff:" + diff);
             if (diff > interval)
             {
                 if (PhotonNetwork.inRoom)
                 {
                     passedTime = now;
                     // 生成位置をランダムな座標にする
-                    float x = Random.Range(-10f, 10f);
-                    float z = Random.Range(-10f, 10f);
+                    float z = Random.Range(0f, 9f);
+                    float xRange = 14f - z;
+                    float x = Random.Range(-xRange, xRange);
                     Vector3 pos = new Vector3(x, 1f, z);
 
                     // 第1引数にResourcesフォルダの中にあるプレハブの名前(文字列)
@@ -48,7 +36,7 @@ public class MonsterCreater : MonoBehaviour {
                     // 第4引数にView ID(指定しない場合は0)
                     GameObject target = GameObject.FindGameObjectWithTag("MainCamera");
                     // モンスターのインスタンス生成
-                    GameObject obj = PhotonNetwork.Instantiate("monster", pos, Quaternion.identity, 0);
+                    GameObject obj = PhotonNetwork.Instantiate("Monster", pos, Quaternion.identity, 0);
                     // ターゲット（カメラ）に向かってくるよう調整
                     obj.transform.LookAt(target.transform);
                     obj.GetComponent<Rigidbody>().velocity = obj.transform.forward * 4;

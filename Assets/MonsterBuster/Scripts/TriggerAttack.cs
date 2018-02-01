@@ -4,16 +4,6 @@ using System.Collections.Generic;
 
 public class TriggerAttack : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
     private void OnTriggerEnter(Collider other)
     {
         var target = other.gameObject.GetComponent<PhotonView>();

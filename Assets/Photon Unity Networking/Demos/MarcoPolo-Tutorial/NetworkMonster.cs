@@ -47,30 +47,22 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        //Ray ray = Camera.main.ScreenPointToRay(eventData.position);
-        //RaycastHit hit;
-
-        //if (Physics.Raycast(ray, out hit, 100f))
-        //{
-        //check if target object was hit
-        //if (hit.transform.gameObject == gameObject)
-            if (eventData.pointerCurrentRaycast.gameObject == gameObject)
+        if (eventData.pointerCurrentRaycast.gameObject == gameObject)
+        {
+            Debug.Log("monster hit");
+            hitCounter++;
+            if (hitCounter > limit)
             {
-                Debug.Log("monster hit");
-                hitCounter++;
-                if (hitCounter > limit)
+                if (photonView.isMine)
                 {
-                    if (photonView.isMine)
-                    {
-                        // 自身が生成したインスタンスの場合、権限があるのでGameObjectを破棄
-                        Dead(photonView.gameObject);
-                    } else {
-                        // 自身のではない場合、権限を要求
-                        photonView.RequestOwnership();
-                    }
+                    // 自身が生成したインスタンスの場合、権限があるのでGameObjectを破棄
+                    Dead(photonView.gameObject);
+                } else {
+                    // 自身のではない場合、権限を要求
+                    photonView.RequestOwnership();
                 }
             }
-        //}
+        }
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -121,6 +113,12 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
         anim.Play("Attack");
         // ステートの反映に1フレームいる
         yield return null;
+
+        // 攻撃時のエフェクト
+        var targetPos = target.transform.position;
+        var pos = new Vector3(targetPos.x, 1.5f, targetPos.z - 1);
+        GameObject fire = PhotonNetwork.Instantiate("Fire", pos, Quaternion.identity, 0);
+        fire.SetActive(true);
 
         // アニメーションが終わるまで待つ
         yield return new WaitWhile(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1);
