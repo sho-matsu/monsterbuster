@@ -7,7 +7,7 @@ public class TriggerAttack : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     private void OnTriggerEnter(Collider other)
     {
         var target = other.gameObject.GetComponent<PhotonView>();
-        if (target != null)
+        if (target != null && target.gameObject.name.Contains("Monster"))
         {
             target.RPC("Attack", PhotonTargets.All);
         }

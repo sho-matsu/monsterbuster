@@ -40,6 +40,7 @@ public class NetworkManager : Photon.PunBehaviour {
 
     public override void OnJoinedRoom() {
         Debug.Log("OnJoinedRoom");
+        PhotonNetwork.Instantiate("BusterPlayer", new Vector3(0, 2, 15F), Quaternion.identity, 0);
     }
 
     public void OnPhotonRandomJoinFailed()

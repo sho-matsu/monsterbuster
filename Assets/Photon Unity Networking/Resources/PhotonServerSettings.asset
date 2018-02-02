@@ -45,4 +45,5 @@ MonoBehaviour:
   - Destroy
   - Dead
   - Attack
+  - ReceiveDamage
   DisableAutoOpenWizard: 1

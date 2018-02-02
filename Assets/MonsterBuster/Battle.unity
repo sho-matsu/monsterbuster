@@ -312,7 +312,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db1f473d3fdd645d39c0ae4a1435d618, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interval: 1.5
+  interval: 3
 --- !u!4 &36383377
 Transform:
   m_ObjectHideFlags: 0
@@ -4682,6 +4682,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1726450781}
   - component: {fileID: 1726450782}
+  - component: {fileID: 1726450783}
   m_Layer: 0
   m_Name: ScoreManager
   m_TagString: Untagged
@@ -4713,6 +4714,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 323c4761da69c40658ef214ac8de3f7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1726450783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1726450780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownerId: 0
+  group: 0
+  OwnerShipWasTransfered: 0
+  prefixBackup: -1
+  synchronization: 3
+  onSerializeTransformOption: 3
+  onSerializeRigidBodyOption: 2
+  ownershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 1726450782}
+  ObservedComponentsFoldoutOpen: 1
+  viewIdField: 1
+  instantiationId: 1
+  currentMasterID: -1
+  isRuntimeInstantiated: 0
 --- !u!1 &1797986772
 GameObject:
   m_ObjectHideFlags: 0

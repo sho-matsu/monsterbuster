@@ -23,9 +23,9 @@ public class MonsterCreater : MonoBehaviour {
 
         if (PhotonNetwork.isMasterClient)
         {
-            // 10体ごとに出現間隔を縮める
-            if (emergenceCount % 10 == 0) {
-                interval = interval / 4 * 3;
+            if (emergenceCount > 20)
+            {
+                interval = interval / 2;
             }
             var now = Time.fixedTime;
             var diff = Mathf.Abs(now - passedTime);
@@ -35,7 +35,7 @@ public class MonsterCreater : MonoBehaviour {
                 {
                     passedTime = now;
                     // 生成位置をランダムな座標にする
-                    float z = Random.Range(0f, 9f);
+                    float z = Random.Range(0f, 7f);
                     float xRange = 14f - z;
                     float x = Random.Range(-xRange, xRange);
                     Vector3 pos = new Vector3(x, 1f, z);
@@ -47,7 +47,7 @@ public class MonsterCreater : MonoBehaviour {
                     GameObject target = GameObject.FindGameObjectWithTag("MainCamera");
                     // モンスターのインスタンス生成
                     GameObject obj = PhotonNetwork.Instantiate("Monster", pos, Quaternion.identity, 0);
-                    // ターゲット（カメラ）に向かってくるよう調整
+                    // ターゲットに向かってくるよう調整
                     obj.transform.LookAt(target.transform);
                     obj.GetComponent<Rigidbody>().velocity = obj.transform.forward * 4;
                     // 移動アニメーション

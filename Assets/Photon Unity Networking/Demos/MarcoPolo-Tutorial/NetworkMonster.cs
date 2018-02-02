@@ -4,16 +4,16 @@ using System.Collections;
 
 public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    private Vector3 correctPlayerPos = Vector3.zero; // We lerp towards this
-    private Quaternion correctPlayerRot = Quaternion.identity; // We lerp towards this
-    private int hitCounter;
+    Vector3 correctMonsterPos = Vector3.zero; // We lerp towards this
+    Quaternion correctMonsterRot = Quaternion.identity; // We lerp towards this
+    int hitCounter;
     public int damageLimit;
-    private GameObject target;
+    GameObject target;
     public static bool enableAttack;
 
     void Awake()
     {
-        target = GameObject.FindGameObjectWithTag("MainCamera");
+        target = GameObject.FindGameObjectWithTag("Player");
         if (damageLimit == 0)
         {
             damageLimit = 5;
@@ -26,8 +26,8 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
     {
         if (!photonView.isMine)
         {
-            transform.position = Vector3.Lerp(transform.position, this.correctPlayerPos, Time.deltaTime * 5);
-            transform.rotation = Quaternion.Lerp(transform.rotation, this.correctPlayerRot, Time.deltaTime * 5);
+            transform.position = Vector3.Lerp(transform.position, correctMonsterPos, Time.deltaTime * 5);
+            transform.rotation = Quaternion.Lerp(transform.rotation, correctMonsterRot, Time.deltaTime * 5);
         }
     }
 
@@ -35,15 +35,15 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
     {
         if (stream.isWriting)
         {
-            // We own this player: send the others our data
+            // We own this Monster: send the others our data
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
         }
         else
         {
-            // Network player, receive data
-            this.correctPlayerPos = (Vector3)stream.ReceiveNext();
-            this.correctPlayerRot = (Quaternion)stream.ReceiveNext();
+            // Network Monster, receive data
+            correctMonsterPos = (Vector3)stream.ReceiveNext();
+            correctMonsterRot = (Quaternion)stream.ReceiveNext();
         }
     }
 
@@ -60,7 +60,9 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
                 {
                     // 自身が生成したインスタンスの場合、権限があるのでGameObjectを破棄
                     Dead(photonView.gameObject);
-                } else {
+                }
+                else
+                {
                     // 自身のではない場合、権限を要求
                     photonView.RequestOwnership();
                 }
@@ -89,7 +91,8 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
         PhotonView view = viewAndPlayers[0] as PhotonView;
         PhotonPlayer requestingPlayer = viewAndPlayers[1] as PhotonPlayer;
 
-        if (view.isMine) {
+        if (view.isMine)
+        {
             Dead(view.gameObject);
         }
     }
@@ -119,20 +122,35 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
         // ステートの反映に1フレームいる
         yield return null;
 
-        // 攻撃時のエフェクト
-        var targetPos = target.transform.position;
-        var pos = new Vector3(targetPos.x, 1.5f, targetPos.z - 1);
-        GameObject fire = PhotonNetwork.Instantiate("Fire", pos, Quaternion.identity, 0);
-        fire.SetActive(true);
+        if (photonView.isMine)
+        {
+            // 攻撃時のエフェクト
+            GameObject fireBall = PhotonNetwork.Instantiate("FireBall", transform.position + new Vector3(0.0f, 2.0f, 0.0f) + (transform.forward * 0.5f), transform.rotation, 0);
+            fireBall.transform.LookAt(target.transform);
+            var ballRb = fireBall.GetComponent<Rigidbody>();
+            ballRb.velocity = fireBall.transform.forward * 15;
+        }
+
+        //var targetPos = target.transform.position;
+        //var pos = new Vector3(targetPos.x, 1.5f, targetPos.z - 1);
+        //GameObject fire = PhotonNetwork.Instantiate("Fire", pos, Quaternion.identity, 0);
+        //fire.SetActive(true);
+        //// プレイヤーにダメージ
+        //var player = GameObject.FindGameObjectWithTag("Player").GetComponent<PhotonView>();
+        //player.RPC("ReceiveDamage", PhotonTargets.All);
 
         // アニメーションが終わるまで待つ
         yield return new WaitWhile(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1);
 
         // モンスター破棄
-        Dead(photonView.gameObject);
+        if (photonView.isMine)
+        {
+            Dead(photonView.gameObject);
+        }
     }
 
-    private void Dead(GameObject monster) {
+    private void Dead(GameObject monster)
+    {
         monster.SetActive(false);
         PhotonNetwork.Destroy(monster);
     }
