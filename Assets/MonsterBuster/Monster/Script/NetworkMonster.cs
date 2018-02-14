@@ -5,8 +5,6 @@ using MonsterBuster.Services;
 
 public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    Vector3 correctMonsterPos = Vector3.zero; // We lerp towards this
-    Quaternion correctMonsterRot = Quaternion.identity; // We lerp towards this
     int hitCounter;
     [SerializeField]
     int damageLimit;
@@ -26,27 +24,10 @@ public class NetworkMonster : Photon.PunBehaviour, IPointerDownHandler, IPointer
     // Update is called once per frame
     void Update()
     {
-        if (!photonView.isMine)
-        {
-            transform.position = Vector3.Lerp(transform.position, correctMonsterPos, Time.deltaTime * 5);
-            transform.rotation = Quaternion.Lerp(transform.rotation, correctMonsterRot, Time.deltaTime * 5);
-        }
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.isWriting)
-        {
-            // We own this Monster: send the others our data
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
-        }
-        else
-        {
-            // Network Monster, receive data
-            correctMonsterPos = (Vector3)stream.ReceiveNext();
-            correctMonsterRot = (Quaternion)stream.ReceiveNext();
-        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
