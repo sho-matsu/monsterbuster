@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 
 namespace MonsterBuster.Monster
-{   
+{
     public class MonsterCreater : MonoBehaviour
     {
-        private float passedTime;
+        float passedTime;
         [SerializeField]
         float interval;
-        private int emergenceCount;
+        int emergenceCount;
         public static bool enableCreate;
 
         // Use this for initialization
@@ -22,7 +22,7 @@ namespace MonsterBuster.Monster
             enableCreate = true;
         }
 
-        private void FixedUpdate()
+        void FixedUpdate()
         {
             if (!enableCreate) return;
 
@@ -45,12 +45,12 @@ namespace MonsterBuster.Monster
                         float x = Random.Range(-xRange, xRange);
                         Vector3 pos = new Vector3(x, 1f, z);
 
+                        GameObject target = GameObject.FindGameObjectWithTag("MainCamera");
+                        // モンスターのインスタンス生成
                         // 第1引数にResourcesフォルダの中にあるプレハブの名前(文字列)
                         // 第2引数にposition
                         // 第3引数にrotation
                         // 第4引数にView ID(指定しない場合は0)
-                        GameObject target = GameObject.FindGameObjectWithTag("MainCamera");
-                        // モンスターのインスタンス生成
                         GameObject obj = PhotonNetwork.Instantiate("Monster", pos, Quaternion.identity, 0);
                         // ターゲットに向かってくるよう調整
                         obj.transform.LookAt(target.transform);

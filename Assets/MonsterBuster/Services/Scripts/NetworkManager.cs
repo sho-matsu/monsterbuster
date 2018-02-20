@@ -9,7 +9,7 @@ namespace MonsterBuster.Services
         void Start()
         {
             // モンスター同士の衝突を無効化する
-            int layer = LayerMask.NameToLayer("monster");
+            int layer = LayerMask.NameToLayer("Monster");
             Physics.IgnoreLayerCollision(layer, layer);
 
             PhotonNetwork.ConnectUsingSettings("0.1");
