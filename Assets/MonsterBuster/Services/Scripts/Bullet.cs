@@ -11,7 +11,17 @@ namespace MonsterBuster.Services
 
         void Update()
         {
-
+            if (Mathf.Abs(gameObject.transform.position.z) > 50)
+            {
+                if (photonView.isMine)
+                {
+                    PhotonNetwork.Destroy(gameObject);
+                }
+                else
+                {
+                    photonView.RequestOwnership();
+                }
+            }
         }
 
         void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -29,20 +39,19 @@ namespace MonsterBuster.Services
         void OnTriggerEnter(Collider other)
         {
             Debug.Log("Bullet Hit");
-            PhotonView myView = gameObject.GetComponent<PhotonView>();
             if (other.gameObject.name.Contains("Monster"))
             {
                 Debug.Log("Bullet hit monster");
                 PhotonView otherView = other.gameObject.GetComponent<PhotonView>();
                 otherView.RPC("Damage", PhotonTargets.All, otherView.viewID);
-            }
-            if (myView.isMine)
-            {
-                PhotonNetwork.Destroy(gameObject);
-            }
-            else
-            {
-                photonView.RequestOwnership();
+                if (photonView.isMine)
+                {
+                    PhotonNetwork.Destroy(gameObject);
+                }
+                else
+                {
+                    photonView.RequestOwnership();
+                }
             }
         }
 

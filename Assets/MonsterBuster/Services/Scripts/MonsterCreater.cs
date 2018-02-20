@@ -28,10 +28,10 @@ namespace MonsterBuster.Monster
 
             if (PhotonNetwork.isMasterClient)
             {
-                if (emergenceCount > 20)
-                {
-                    interval = interval / 2;
-                }
+                //if (emergenceCount > 20)
+                //{
+                //    interval = interval / 2;
+                //}
                 var now = Time.fixedTime;
                 var diff = Mathf.Abs(now - passedTime);
                 if (diff > interval)

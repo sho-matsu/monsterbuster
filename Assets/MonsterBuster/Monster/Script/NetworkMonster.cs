@@ -65,8 +65,9 @@ namespace MonsterBuster.Monster
             {
                 Debug.Log("receive damage monster hit");
                 damage++;
-                if (damage > damageLimit)
+                if (damage >= damageLimit)
                 {
+                    Debug.Log("monster buster");
                     ScoreManager.ScoreUp();
                     if (photonView.isMine)
                     {
